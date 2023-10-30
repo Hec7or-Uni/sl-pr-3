@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#op1").click(function() {
+                // Realiza una solicitud AJAX al servidor Flask
+                $.ajax({
+                    method: "POST",
+                    url:"/op1",
+                    context: document.body 
+                });
+            });
+        });
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión</title>
@@ -49,7 +62,7 @@
     </style>
 </head>
 <body>
-    <!-- <form action="/ini" method="post"> -->
+    <div>
         <button id="op1" type="button">INTRODUCIR DATOS</button>
         <button id="op2" type="button">GRABAR DATOS</button>
         <button id="op3" type="button">ORDENAR DATOS</button>
@@ -59,21 +72,27 @@
         <button id="op7" type="button">BUSCAR DATOS</button>
         <br>
         <button id="op8" type="button">ACABAR</button>
-    <!-- </form> -->
+    </div>
 
-    <script>
+    <!-- <script>
         const op1Btn = document.getElementById("op1");
         op1Btn.addEventListener("click", () => {
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/op1', true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) {
-                    // Insertar la respuesta en el contenedor
-                    responseContainer.innerHTML = xhr.responseText;
-                }
-            };
-
             xhr.send();
+            xhr.onload = function () {
+                console.log("fuera");
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    console.log(xhr.responseText);
+                    var htmlRes = xhr.responseText
+                    console.log("dentro");
+                    document.open();
+                    document.write(htmlRes);
+                    document.close();
+                    // var newWindow = window.open();
+                    // newWindow.document.write(htmlRes);
+                }
+            }
         });
 
         const op2Btn = document.getElementById("op2");
@@ -132,6 +151,6 @@
             xhr.open('POST', '/op8', true);
             xhr.send();
         });
-    </script>
+    </script> -->
 </body>
 </html>
