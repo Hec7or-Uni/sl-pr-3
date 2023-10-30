@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión</title>
+    <title>Introducir datos</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -156,47 +156,10 @@
                     <option>Estrategia</option>
                 </select>
             </div>
+            <label for="cinta">Cinta:</label>
+            <input type="text" id="cinta" name="cinta">
+            <button id="Guardar" type="submit">Guardar</button>
         </form>
-        <button id="Guardar" type="button">Guardar</button>
     </div>
-
-    <script>
-        document.getElementById("guardar").addEventListener("click", () => {
-            console.log("dentro addeventlistener");
-            var nombreElement = document.getElementById("nombre").value;
-            console.log(nombreElement)
-            // Obtener el elemento select
-            // var tipoElement = document.getElementById("tipo").value;
-            // console.log(tipoElement)
-            
-            // Hacer algo con el valor, como mostrarlo en la consola
-            // console.log("Valor tipoElement: " + tipoElement + "\nValor nombreElement: " + nombreElement);
-
-            // Puedes almacenar este valor en una variable o enviarlo al servidor
-
-            // var xhr = new XMLHttpRequest();
-            // xhr.open('POST', '/op1_1', true);
-
-            // var data = {
-            //     nombre: nombreElement
-            //     // tipo: tipoElement
-            // };
-            // var jsonData = JSON.stringify(data);
-            // xhr.send(jsonData);
-            // xhr.onload = function () {
-            //     console.log("fuera");
-            //     if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            //         console.log(xhr.responseText);
-            //         var htmlRes = xhr.responseText
-            //         console.log("dentro");
-            //         document.open();
-            //         document.write(htmlRes);
-            //         document.close();
-            //         // var newWindow = window.open();
-            //         // newWindow.document.write(htmlRes);
-            //     }
-            // }
-        });
-    </script>
 </body>
 </html>

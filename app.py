@@ -1,85 +1,206 @@
-from flask import Flask, render_template, request, url_for, redirect, session
+from flask import Flask, render_template, request, redirect, session
 from flask_session import Session
-from PIL import Image
-import pytesseract as pt
 import subprocess
 import signal
 import time
 import os
+import re
 
 from lib.window import Window
 from lib.keyboard import Keyboard
 
 app = Flask(__name__)
-database=subprocess.Popen("cd Database-MSDOS && .\\database.bat", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-app.config['SESSION_TYPE'] = 'filesystem'  # Almacena los datos de sesión en el sistema de archivos
-Session(app)
+db = False
+
+def obtener_info():
+    patron = r'\d+'  # Este patrón busca uno o más dígitos consecutivos
+
+    lineNum = read_line(2)
+    num  = re.findall(patron, lineNum)[0]
+
+    lineMem = read_line(5)
+    palabras = lineMem.split()
+    n = palabras[0] # Obtiene la primera palabra
+    if n!="Memoria":
+        lineMem = read_line(4)
+        ord = False
+    else:
+        ord = True    
+    mem = re.findall(patron, lineMem)[0]
+
+    lineOrden = read_line(3)
+    if ord==False:
+        lineOrden = read_line(4)
+        palabras = lineOrden.split()
+        orden = palabras[7] # Obtiene la octava palabra
+    else:
+        lineOrden = read_line(3)
+        palabras = lineOrden.split()
+        orden = palabras[9] # Obtiene la decima palabra
+    
+    return num, mem, orden, ord
+
+def iniciar():
+    global ventana, teclado, database, db
+    if db==False:
+        database=subprocess.Popen("cd Database-MSDOS && .\\database.bat", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        time.sleep(4)
+        ventana = Window("DOSBox 0.74, Cpu speed:     3000 cycles, Frameskip  0, Program:  GWBASIC")
+        teclado = Keyboard()
+        db = True
+
+def terminar():
+    global ventana, teclado, database, db
+    ventana.Cerrar_ventana()
+    del ventana
+    del teclado
+    database.terminate()
+    db = False
+    archivo_a_eliminar = "ventana.txt"
+    if os.path.exists(archivo_a_eliminar):
+        os.remove(archivo_a_eliminar) 
 
 @app.route('/')
 def route():
     return render_template('index.html')
 
+@app.route('/op', methods=['POST', 'GET'])
+def op():
+    iniciar()
+    return render_template('listado.html')
+
 @app.route('/op1', methods=['POST'])
 def op1():
+    time.sleep(3)
     teclado.Click_tecla('1')
     time.sleep(1)
     ventana_a_archivo()
     line = read_line(2)
-    data = {"line": line}
-    
-    # return  jsonify({'redirect': '/op1_1', 'data': data})
-    # Construye la URL de redirección con los datos en la cadena de consulta
-    # redirect_url = f"/op1_1.html?line={data['line']}"
-    print(line)
-    # session['line'] = line
-    return render_template('op1_1.html', data=line)
+    return render_template('op1.html', data=line)
 
-@app.route('/op1_1', methods=['GET'])
+@app.route('/op1_1', methods=['POST'])
 def op1_1():
-    line = request.args['line']
-    line = session['line']
-    print(line)
-    return redirect(f"op1_1?line={line}")
+    time.sleep(3)
+    nombre = request.form['nombre']
+    tipo = request.form['tipo']
+    cinta = request.form['cinta']
+    print(nombre)
+    print(tipo)
+    print(cinta)
 
-
-# @app.route('/op1_1', methods=['POST'])
-# def op1_1():
-#     data = request.get_json()
-        
-#     # data contendrá los datos enviados en formato JSON
-#     # Puedes acceder a los valores específicos de esta manera:
-#     nombre_value = data.get('nombre')
-#     tipo_value = data.get('tipo')
-#     print(nombre_value)
-#     print(tipo_value)
+    teclado.Escribir_frase(nombre)
+    teclado.Enter()
+    time.sleep(0.5)
+    teclado.Escribir_frase(tipo)
+    teclado.Enter()
+    time.sleep(0.5)
+    teclado.Escribir_frase(cinta)
+    teclado.Enter()
+    time.sleep(0.5)
+    teclado.Enter()
+    time.sleep(0.5)
+    teclado.Enter()
+    return redirect('/op')
 
 @app.route('/op2', methods=['POST'])
 def op2():
-    return "Operación 2 realizada"
+    time.sleep(3)
+    teclado.Click_tecla('2')
+    teclado.Enter()
+    time.sleep(1)
+    return render_template('op2.html')
+
+@app.route('/op2_1', methods=['POST'])
+def op2_1():
+    time.sleep(3)
+    teclado.Click_tecla('1')
+    teclado.Enter()
+    time.sleep(1)
+    return redirect('/op')
+
+@app.route('/op2_2', methods=['POST'])
+def op2_2():
+    time.sleep(3)
+    teclado.Click_tecla('2')
+    teclado.Enter()
+    time.sleep(1)
+    return redirect('/op')
+
+@app.route('/op2_3', methods=['POST'])
+def op2_3():
+    time.sleep(3)
+    teclado.Click_tecla('3')
+    teclado.Enter()
+    time.sleep(1)
+    return redirect('/op')
 
 @app.route('/op3', methods=['POST'])
 def op3():
-    return "Operación 3 realizada"
+    time.sleep(3)
+    teclado.Click_tecla('3')
+    time.sleep(1)
+    ventana_a_archivo()
+
+    _, _, orden, ord = obtener_info()
+
+    if ord==True:
+        data=f"Ordenada por el campo '{orden}'."
+    else:
+        data="No está ordenada."
+
+    return render_template('op3.html', data=data)
+
+@app.route('/op3_1', methods=['POST'])
+def op3_1():
+    orden = request.form['orden']
+
+    if orden=="Nombre":
+        teclado.Click_tecla('1')
+        teclado.Enter()
+    elif orden=="Tipo":
+        teclado.Click_tecla('2')
+        teclado.Enter()
+    elif orden=="Cinta":
+        teclado.Click_tecla('3')
+        teclado.Enter()
+    elif orden=="Antigüedad":
+        teclado.Click_tecla('4')
+        teclado.Enter()
+
+    return redirect('/op')
 
 @app.route('/op4', methods=['POST'])
 def op4():
-    return "Operación 4 realizada"
+    time.sleep(3)
+    teclado.Click_tecla('4')
+    time.sleep(1)
+    ventana_a_archivo()
+
+    num, mem, orden, ord = obtener_info()
+
+    teclado.Enter()
+
+    return render_template('op4.html',num=num,mem=mem,orden=orden,ord=ord)
 
 @app.route('/op5', methods=['POST'])
 def op5():
-    return "Operación 5 realizada"
+    mensaje = "Función a implementar más adelante."
+    return render_template('listado.html', mensaje=mensaje)
 
 @app.route('/op6', methods=['POST'])
 def op6():
-    return "Operación 6 realizada"
+    mensaje = "Función a implementar más adelante."
+    return render_template('listado.html', mensaje=mensaje)
 
 @app.route('/op7', methods=['POST'])
 def op7():
-    return "Operación 7 realizada"
+    mensaje = "Función a implementar más adelante."
+    return render_template('listado.html', mensaje=mensaje)
 
 @app.route('/op8', methods=['POST'])
 def op8():
-    return "Operación 8 realizada"
+    terminar()
+    return redirect('/')
 
 
 
@@ -97,14 +218,8 @@ def read_line(line, file="ventana.txt"):
             return 0
 
 def terminar_app(signum, frame):
-    global ventana
-    ventana.Cerrar_ventana()
-    del ventana
-    database.terminate()
-    archivo_a_eliminar = "ventana.txt"
-    if os.path.exists(archivo_a_eliminar):
-        os.remove(archivo_a_eliminar)
-    exit(0)   
+    terminar()
+    exit(0)
 
 def ventana_a_archivo():
     with open('ventana.txt', 'w') as archivo:
@@ -112,9 +227,5 @@ def ventana_a_archivo():
         archivo.write(window)
 
 if __name__ == '__main__':
-    global ventana
     signal.signal(signal.SIGINT, terminar_app)
-    time.sleep(4)
-    ventana = Window("DOSBox 0.74, Cpu speed:     3000 cycles, Frameskip  0, Program:  GWBASIC")
-    teclado = Keyboard()
     app.run(host='0.0.0.0', port=8080)

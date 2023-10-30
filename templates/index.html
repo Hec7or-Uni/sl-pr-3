@@ -1,22 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script>
-        $(document).ready(function() {
-            $("#op1").click(function() {
-                // Realiza una solicitud AJAX al servidor Flask
-                $.ajax({
-                    method: "POST",
-                    url:"/op1",
-                    context: document.body 
-                });
-            });
-        });
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión</title>
+    <title>Inicio</title>
     <style>
         body {
             display: flex;
@@ -36,7 +23,7 @@
         }
 
         h1 {
-            font-size: 30px; /* Reduje el tamaño del título para que se vea mejor con el nuevo diseño */
+            font-size: 60px; /* Reduje el tamaño del título para que se vea mejor con el nuevo diseño */
             color: #333;
             margin-bottom: 20px;
         }
@@ -57,100 +44,13 @@
             border: none;
             cursor: pointer;
             font-size: 18px;
-            margin: 10px 0;
         }
     </style>
 </head>
 <body>
-    <div>
-        <button id="op1" type="button">INTRODUCIR DATOS</button>
-        <button id="op2" type="button">GRABAR DATOS</button>
-        <button id="op3" type="button">ORDENAR DATOS</button>
-        <button id="op4" type="button">INFORMACIÓN BASE DE DATOS</button>
-        <button id="op5" type="button">IMPRIMIR DATOS SEGÚN ORDEN</button>
-        <button id="op6" type="button">LISTAR DATOS SEGÚN ORDEN</button>
-        <button id="op7" type="button">BUSCAR DATOS</button>
-        <br>
-        <button id="op8" type="button">ACABAR</button>
-    </div>
-
-    <!-- <script>
-        const op1Btn = document.getElementById("op1");
-        op1Btn.addEventListener("click", () => {
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/op1', true);
-            xhr.send();
-            xhr.onload = function () {
-                console.log("fuera");
-                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                    console.log(xhr.responseText);
-                    var htmlRes = xhr.responseText
-                    console.log("dentro");
-                    document.open();
-                    document.write(htmlRes);
-                    document.close();
-                    // var newWindow = window.open();
-                    // newWindow.document.write(htmlRes);
-                }
-            }
-        });
-
-        const op2Btn = document.getElementById("op2");
-        op2Btn.addEventListener("click", () => {
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/op2', true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4  && xhr.status === 200) {
-                    document.open();
-                    document.write(xhr.responseText);
-                    document.close();
-                }
-            };
-
-            xhr.send();
-        });
-
-        const op3Btn = document.getElementById("op3");
-        op3Btn.addEventListener("click", () => {
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/op3', true);
-            xhr.send();
-        });
-
-        const op4Btn = document.getElementById("op4");
-        op4Btn.addEventListener("click", () => {
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/op4', true);
-            xhr.send();
-        });
-
-        const op5Btn = document.getElementById("op5");
-        op5Btn.addEventListener("click", () => {
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/op5', true);
-            xhr.send();
-        });
-
-        const op6Btn = document.getElementById("op6");
-        op6Btn.addEventListener("click", () => {
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/op6', true);
-            xhr.send();
-        });
-
-        const op7Btn = document.getElementById("op7");
-        op7Btn.addEventListener("click", () => {
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/op7', true);
-            xhr.send();
-        });
-
-        const op8Btn = document.getElementById("op8");
-        op8Btn.addEventListener("click", () => {
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/op8', true);
-            xhr.send();
-        });
-    </script> -->
+    <form action="/op" method="post">
+        <h1>INICIO</h1>
+        <button type="submit" name="Acceder" value="Acceder">Acceder</button>
+    </form>
 </body>
 </html>

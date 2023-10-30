@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acabar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-container {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .btn-container button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        table tr:hover {
+            background-color: #ddd;
+        }
+
+        table th, table td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        table tbody {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            z-index: 1;
+            overflow: auto;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 60%;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .context-menu {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            top: 100%; /* Posición debajo del botón */
+            left: 0; /* Alineado con el borde izquierdo del botón */
+        }
+
+        .context-menu ul {
+            list-style-type: none;
+            font-size: 12px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .context-menu ul li {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .context-menu ul li:hover {
+            background-color: #f2f2f2;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>ACABAR</h1>
+    </header>
+    
+    <div class="container">
+        <button id="Guardar" type="submit">Guardar</button>
+    </div>
+
+    <script>
+        
+        nuevaTareaBtn.addEventListener("click", (event) => {
+            // Obtener la posición del botón "Nueva tarea"
+            const botonRect = nuevaTareaBtn.getBoundingClientRect();
+            const botonWidth = botonRect.width-1;
+            
+            // Establecer la posición del menú contextual
+            menuContextual.style.display = "block";
+            menuContextual.style.top = botonRect.bottom + "px";
+            menuContextual.style.left = botonRect.left + "px";
+            menuContextual.style.width = botonWidth + "px";
+        });
+    </script>
+</body>
+</html>
