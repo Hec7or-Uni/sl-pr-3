@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 400px; /* Reduje el ancho para que se vea mejor en dispositivos móviles */
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 30px; /* Reduje el tamaño del título para que se vea mejor con el nuevo diseño */
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- <form action="/ini" method="post"> -->
+        <button id="op1" type="button">INTRODUCIR DATOS</button>
+        <button id="op2" type="button">GRABAR DATOS</button>
+        <button id="op3" type="button">ORDENAR DATOS</button>
+        <button id="op4" type="button">INFORMACIÓN BASE DE DATOS</button>
+        <button id="op5" type="button">IMPRIMIR DATOS SEGÚN ORDEN</button>
+        <button id="op6" type="button">LISTAR DATOS SEGÚN ORDEN</button>
+        <button id="op7" type="button">BUSCAR DATOS</button>
+        <br>
+        <button id="op8" type="button">ACABAR</button>
+    <!-- </form> -->
+
+    <script>
+        const op1Btn = document.getElementById("op1");
+        op1Btn.addEventListener("click", () => {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/op1', true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    // Insertar la respuesta en el contenedor
+                    responseContainer.innerHTML = xhr.responseText;
+                }
+            };
+
+            xhr.send();
+        });
+
+        const op2Btn = document.getElementById("op2");
+        op2Btn.addEventListener("click", () => {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/op2', true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4  && xhr.status === 200) {
+                    document.open();
+                    document.write(xhr.responseText);
+                    document.close();
+                }
+            };
+
+            xhr.send();
+        });
+
+        const op3Btn = document.getElementById("op3");
+        op3Btn.addEventListener("click", () => {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/op3', true);
+            xhr.send();
+        });
+
+        const op4Btn = document.getElementById("op4");
+        op4Btn.addEventListener("click", () => {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/op4', true);
+            xhr.send();
+        });
+
+        const op5Btn = document.getElementById("op5");
+        op5Btn.addEventListener("click", () => {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/op5', true);
+            xhr.send();
+        });
+
+        const op6Btn = document.getElementById("op6");
+        op6Btn.addEventListener("click", () => {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/op6', true);
+            xhr.send();
+        });
+
+        const op7Btn = document.getElementById("op7");
+        op7Btn.addEventListener("click", () => {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/op7', true);
+            xhr.send();
+        });
+
+        const op8Btn = document.getElementById("op8");
+        op8Btn.addEventListener("click", () => {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/op8', true);
+            xhr.send();
+        });
+    </script>
+</body>
+</html>
