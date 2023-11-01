@@ -1,3 +1,0 @@
-Input después de fin de archivo en 80
-0k
-1

@@ -5,15 +5,22 @@ class Keyboard:
         self.__keyboard = Controller()
     
     def Click_tecla(self, nombre):
+        nombre = nombre.lower()
         if nombre==" ":
             self.__keyboard.press(Key.space)
             self.__keyboard.release(Key.space)
         else:
-            self.__keyboard.press(nombre)
-            self.__keyboard.release(nombre)
+            if nombre.isalpha():
+                self.__keyboard.press(Key.shift)
+                self.__keyboard.press(nombre)
+                self.__keyboard.release(nombre)
+                self.__keyboard.release(Key.shift)
+            elif nombre.isdigit():
+                self.__keyboard.press(nombre)
+                self.__keyboard.release(nombre)
+
 
     def Escribir_frase(self, frase):
-        frase = frase.lower()
         for char in frase:
             self.Click_tecla(char)
         

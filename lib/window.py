@@ -39,7 +39,8 @@ class Window:
 
     def __read_imagen(self):
         imagen = Image.open('captura.png')
-        string = pt.image_to_string(imagen, config='--psm 6')
+        # string = pt.image_to_string(imagen, config='--psm 6')
+        string = pt.image_to_string(imagen, lang="spa")
         return string
 
     def __delete_imagen(self):
