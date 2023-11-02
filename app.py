@@ -7,6 +7,7 @@ from lib.keyboard import Keyboard
 app = Flask(__name__)
 delayScreen = 1
 db = False
+orden = ""
 
 def terminar():
     global ventana, teclado, database, db
@@ -45,18 +46,19 @@ def read_line(line, file="ventana.txt"):
             return 0
 
 def read_word(word, line):
-    word = word - 1
-    print("Word: ",word)
-    
+    word = word - 1    
     palabras = line.split()
     return palabras[word]
 
 def obtener_num_registros():
+    global orden
     teclado.Click_tecla('4')
     time.sleep(delayScreen)
     ventana_a_archivo()
     teclado.Enter()
     word = read_word(2,read_line(2))
+    orden = read_word(11,read_line(3))[0]
+    print("Orden: ",orden)
     return word
 
 @app.route('/', methods=['GET'])
@@ -68,17 +70,22 @@ def inicio():
     data = {
         "numReg": obtener_num_registros(),
         "encontrado": "SI",
-        "datos": [{  }]
+        "datos": []
     }
     return render_template("app.html", data=data)
 
+@app.route('/nombre', methods=['GET'])
+def nombre_get():
+    return redirect('/')
+
 @app.route('/nombre', methods=['POST'])
-def nombre():
+def nombre_post():
     time.sleep(3) # Borrar
 
     teclado.Click_tecla('7')
     time.sleep(delayScreen)
     teclado.Click_tecla('N')
+    
     time.sleep(delayScreen)
     teclado.Enter()
     time.sleep(delayScreen)
@@ -100,7 +107,7 @@ def nombre():
         data = {
             "numReg": obtener_num_registros(),
             "encontrado": "NO",
-            "datos": [{  }]
+            "datos": []
         }
 
     else : # Programa encontrado
@@ -131,17 +138,71 @@ def nombre():
         
     return render_template("app.html", data=data)
 
+@app.route('/cinta', methods=['GET'])
+def cinta_get():
+    return redirect('/')
+
 @app.route('/cinta', methods=['POST'])
-def cinta():
+def cinta_post():
     time.sleep(3) # Borrar
 
+    # teclado.Click_tecla('3')
+    # time.sleep(delayScreen)
+    # teclado.Click_tecla('3')
+    # time.sleep(delayScreen)
+    # teclado.Enter()
 
+    # ventana_a_archivo()
+    # print("Line: ", read_line(7))
+    # while read_line(7)==0:
+    #     print("Line: ", read_line(7))
+    #     time.sleep(1)
+    #     teclado.Enter()
+    #     ventana_a_archivo()
+    
+    # print("Buscando")
+    
+    teclado.Enter()
+    time.sleep(delayScreen)
+    teclado.Click_tecla('6')
+    time.sleep(delayScreen)
+    teclado.Enter()
+    time.sleep(delayScreen)
 
     data = {
-        "numReg": obtener_num_registros(),
+        "numReg": 0,
         "encontrado": "NO",
-        "datos": [{  }]
+        "datos": []
     }
+
+    hayProgramas = True
+    while hayProgramas:
+        ventana_a_archivo()
+        i=2
+        while i<20 and hayProgramas:
+            # print("Line: ",read_line(i),", i: ", i)
+            if read_line(i)==0:
+                hayProgramas = False
+            else:
+                palabras = read_line(i).split()
+                tmp = palabras[-3:]
+                cinta = tmp[0]
+                resto = palabras[1:-3]
+                print("Cinta: ",cinta)
+                if cinta==request.form['cinta']:
+                    data["encontrado"] = "SI"
+                    numero = read_word(1, read_line(i))
+                    nombre = read_word(2, read_line(i))
+                    tipo = read_word(3, read_line(i))
+                    data["datos"].append({"numero": numero, "nombre": nombre, "tipo": tipo, "cinta": cinta})
+                    print("Data: ", data)
+                i = i+1
+        teclado.Click_tecla(" ")
+        time.sleep(delayScreen)
+        # print("Cambio pagina")
+
+    data["numReg"] = obtener_num_registros()
+
     return render_template("app.html", data=data)
 
 
