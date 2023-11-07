@@ -145,22 +145,6 @@ def cinta_get():
 @app.route('/cinta', methods=['POST'])
 def cinta_post():
     time.sleep(3) # Borrar
-
-    # teclado.Click_tecla('3')
-    # time.sleep(delayScreen)
-    # teclado.Click_tecla('3')
-    # time.sleep(delayScreen)
-    # teclado.Enter()
-
-    # ventana_a_archivo()
-    # print("Line: ", read_line(7))
-    # while read_line(7)==0:
-    #     print("Line: ", read_line(7))
-    #     time.sleep(1)
-    #     teclado.Enter()
-    #     ventana_a_archivo()
-    
-    # print("Buscando")
     
     teclado.Enter()
     time.sleep(delayScreen)
@@ -180,26 +164,63 @@ def cinta_post():
         ventana_a_archivo()
         i=2
         while i<20 and hayProgramas:
-            # print("Line: ",read_line(i),", i: ", i)
             if read_line(i)==0:
                 hayProgramas = False
             else:
                 palabras = read_line(i).split()
-                tmp = palabras[-3:]
-                cinta = tmp[0]
-                resto = palabras[1:-3]
-                print("Cinta: ",cinta)
-                if cinta==request.form['cinta']:
+                numero = palabras[0]
+                nombre_tipo = palabras[1:-2]
+                cinta = (palabras[-2:-1])[0]
+                cinta_ok = False
+                # print("Cinta: ",cinta)
+                # print("Nombre_Tipo: ",nombre_tipo)
+                if cinta.find("-")!=-1:
+                    cintas = cinta.split("-")
+                    j=0
+                    while j<len(cintas):
+                        if cintas[i]==request.form['cinta']:
+                            cinta_ok = True
+                        j = j + 1
+                elif cinta==request.form['cinta']:
+                    cinta_ok = True
+
+                if cinta_ok:
+                    encontrado=False
+                    var=1
+                    while encontrado==False and var<=3:
+                        tmp = "".join(nombre_tipo[-var:])
+                        print(tmp)
+                        encontrado = True
+                        if tmp=="UTILIDAD":
+                            tipo = "UTILIDAD"
+                        elif tmp=="ARCADE":
+                            tipo = "ARCADE"
+                        elif tmp=="CONVERSACIONAL":
+                            tipo = "CONVERSACIONAL"
+                        elif tmp=="VIDEOAVENTURA":
+                            tipo = "VIDEOAVENTURA"
+                        elif tmp=="SIMULADOR":
+                            tipo = "SIMULADOR"
+                        elif tmp=="JUEGODEMESA":
+                            tipo = "JUEGO DE MESA"
+                        elif tmp=="S.DEPORTIVO":
+                            tipo = "S. DEPORTIVO"
+                        elif tmp=="ESTRATEGIA":
+                            tipo = "ESTRATEGIA"
+                        else:
+                            tipo = "DESCONOCIDO"
+                            encontrado = False
+                        var = var + 1
+
+                    var = var - 1
+                    nombre = " ".join(nombre_tipo[:-var])
+                
                     data["encontrado"] = "SI"
-                    numero = read_word(1, read_line(i))
-                    nombre = read_word(2, read_line(i))
-                    tipo = read_word(3, read_line(i))
                     data["datos"].append({"numero": numero, "nombre": nombre, "tipo": tipo, "cinta": cinta})
-                    print("Data: ", data)
-                i = i+1
+                    # print("Data: ", data)
+            i = i+1
         teclado.Click_tecla(" ")
         time.sleep(delayScreen)
-        # print("Cambio pagina")
 
     data["numReg"] = obtener_num_registros()
 
