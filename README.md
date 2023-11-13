@@ -4,6 +4,8 @@ Para poder acceder a el mismo hay que ejecutar el siguiente comando:
 .\activate.bat
 .\env\Scripts\activate
 ```
+NOTA: Necesario borrar la carpeta env con anterioridad.
+
 
 Para salir del mismo hay que ejecutar el siguiente comando:
 ```bash
