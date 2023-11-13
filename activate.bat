@@ -3,6 +3,9 @@
 rem Nombre del entorno virtual
 set nombre_entorno=p3_enviroment
 
+rem Borrar directorio entorno virtual si ya está creado
+rmdir /s /q %nombre_entorno%
+
 rem Crear el entorno virtual
 python -m venv %nombre_entorno%
 
