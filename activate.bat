@@ -1,19 +1,28 @@
 @echo off
+setlocal
 
-rem Nombre del entorno virtual
-set nombre_entorno=p3_enviroment
+echo Preparando entorno, por favor espere
 
-rem Borrar directorio entorno virtual si ya está creado
-rmdir /s /q %nombre_entorno%
+:: Ruta completa a tu requirements.txt
+set REQ_PATH=.
 
-rem Crear el entorno virtual
-python -m venv %nombre_entorno%
+:: Ruta donde se creará el entorno virtual
+set VENV_PATH=.\env
 
-rem Activar el entorno virtual
-call %nombre_entorno%\Scripts\activate
+:: Ruta al pip del entorno virtual
+set PIP="%VENV_PATH%\Scripts\pip.exe"
 
-rem Instalar paquetes (puedes agregar más paquetes según tus necesidades)
-pip install -r requirements.txt
 
-rem Pausa para mantener la ventana abierta (opcional)
-pause
+:: Crear el entorno virtual
+echo Creando entorno virtual en %VENV_PATH% ...
+python -m venv "%VENV_PATH%"
+
+:: Activar el entorno virtual
+echo Entorno virtual creado ...
+call "%VENV_PATH%\Scripts\activate.bat"
+
+:: Instalar las dependencias de tu aplicación
+echo Instalando dependencias ...
+%PIP% install -r "%REQ_PATH%\requirements.txt" > nul 2>&1
+
+endlocal

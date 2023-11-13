@@ -7,7 +7,6 @@ from lib.keyboard import Keyboard
 app = Flask(__name__)
 delayScreen = 1
 db = False
-orden = ""
 
 def terminar():
     global ventana, teclado, database, db
@@ -30,7 +29,7 @@ def iniciar():
 
 def ventana_a_archivo(file="ventana.txt"):
     with open(file, 'w') as archivo:
-        window = ventana.Eliminar_lineas_vacias(ventana.Info_ventana_completa())
+        window = ventana.Eliminar_lineas_vacias(ventana.Info_ventana())
         archivo.write(window)
 
 def read_line(line, file="ventana.txt"):
@@ -51,14 +50,11 @@ def read_word(word, line):
     return palabras[word]
 
 def obtener_num_registros():
-    global orden
     teclado.Click_tecla('4')
     time.sleep(delayScreen)
     ventana_a_archivo()
     teclado.Enter()
     word = read_word(2,read_line(2))
-    orden = read_word(11,read_line(3))[0]
-    print("Orden: ",orden)
     return word
 
 @app.route('/', methods=['GET'])
