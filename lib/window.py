@@ -24,9 +24,12 @@ class Window:
 
         return [100,100,w,h]
 
-    def __capturar_ventana(self):
+    def __capturar_ventana(self,fullscreen=False):
         # Define las coordenadas de la zona que deseas capturar
-        x1, y1, x2, y2 = self.__coor[0]+3, self.__coor[1]+25, self.__coor[2]-2, self.__coor[3]  # Define las coordenadas izquierda arriba y derecha abajo
+        if (fullscreen):
+            x1, y1, x2, y2 = 0,0,self.__window.width, self.__window.height
+        else:
+            x1, y1, x2, y2 = self.__coor[0]+3, self.__coor[1]+25, self.__coor[2]-2, self.__coor[3]  # Define las coordenadas izquierda arriba y derecha abajo
 
         # Captura la zona de la pantalla
         captura = ImageGrab.grab(bbox=(x1, y1, x2, y2))
@@ -60,6 +63,13 @@ class Window:
     def Info_ventana(self):
         self.__reubicar_ventana_tamaño()
         self.__capturar_ventana()
+        time.sleep(4)
+        imagen = self.__read_imagen()
+        self.__delete_imagen()
+        return imagen
+    
+    def Info_ventana_completa(self):
+        self.__capturar_ventana(fullscreen=True)
         time.sleep(4)
         imagen = self.__read_imagen()
         self.__delete_imagen()

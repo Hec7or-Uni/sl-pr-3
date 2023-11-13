@@ -30,7 +30,7 @@ def iniciar():
 
 def ventana_a_archivo(file="ventana.txt"):
     with open(file, 'w') as archivo:
-        window = ventana.Eliminar_lineas_vacias(ventana.Info_ventana())
+        window = ventana.Eliminar_lineas_vacias(ventana.Info_ventana_completa())
         archivo.write(window)
 
 def read_line(line, file="ventana.txt"):
