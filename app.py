@@ -115,22 +115,70 @@ def nombre_post():
         teclado.Enter()
         time.sleep(delayScreen)
 
+        print(request.form['cinta'])
+        palabras = read_line(1).split()
+        numero = palabras[0]
+        nombre_tipo = palabras[2:-1]
+        cinta = palabras[-1:][0]
+        cinta_ok = False
+        print("Cinta: ",cinta)
+        print("Nombre_Tipo: ",nombre_tipo)
+        if cinta.find("-")!=-1:
+            cintas = cinta.split("-")
+            j=0
+            while j<len(cintas):
+                if cintas[j]==request.form['cinta']:
+                    cinta_ok = True
+                j = j + 1
+        elif cinta==request.form['cinta']:
+            cinta_ok = True
+
+        if cinta_ok:
+            encontrado=False
+            var=1
+            while encontrado==False and var<=3:
+                tmp = "".join(nombre_tipo[-var:])
+                print(tmp)
+                encontrado = True
+                if tmp=="UTILIDAD":
+                    tipo = "UTILIDAD"
+                elif tmp=="ARCADE":
+                    tipo = "ARCADE"
+                elif tmp=="CONVERSACIONAL":
+                    tipo = "CONVERSACIONAL"
+                elif tmp=="VIDEOAVENTURA":
+                    tipo = "VIDEOAVENTURA"
+                elif tmp=="SIMULADOR":
+                    tipo = "SIMULADOR"
+                elif tmp=="JUEGODEMESA":
+                    tipo = "JUEGO DE MESA"
+                elif tmp=="S.DEPORTIVO":
+                    tipo = "S. DEPORTIVO"
+                elif tmp=="ESTRATEGIA":
+                    tipo = "ESTRATEGIA"
+                else:
+                    tipo = "DESCONOCIDO"
+                    encontrado = False
+                var = var + 1
+
+            var = var - 1
+            nombre = " ".join(nombre_tipo[:-var])
+
+            print("Nombre: ",nombre)
+            print("Tipo: ",tipo)
         
-        numero = read_word(1,read_line(1))
-        nombre = read_word(3,read_line(1))
-        tipo = read_word(4,read_line(1))
-        tmp = read_word(6,read_line(1))
-        cinta = tmp.split(':')[1]
-        data = {
-            "numReg": obtener_num_registros(),
-            "encontrado": "SI",
-            "datos": [{ 
-                "numero": numero,
-                "nombre": nombre,
-                "tipo": tipo,
-                "cinta": cinta
-            }]
-        }
+            data["encontrado"] = "SI"
+            data["datos"].append({"numero": numero, "nombre": nombre, "tipo": tipo, "cinta": cinta})
+        # data = {
+        #     "numReg": obtener_num_registros(),
+        #     "encontrado": "SI",
+        #     "datos": [{ 
+        #         "numero": numero,
+        #         "nombre": nombre,
+        #         "tipo": tipo,
+        #         "cinta": cinta
+        #     }]
+        # }
         
     return render_template("app.html", data=data)
 
@@ -174,7 +222,7 @@ def cinta_post():
                     cintas = cinta.split("-")
                     j=0
                     while j<len(cintas):
-                        if cintas[i]==request.form['cinta']:
+                        if cintas[j]==request.form['cinta']:
                             cinta_ok = True
                         j = j + 1
                 elif cinta==request.form['cinta']:

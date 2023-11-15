@@ -1,1 +1,1 @@
-gwbasic.exe database
+gwbasic.exe database > salida.txt
