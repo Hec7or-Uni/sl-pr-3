@@ -1,4 +1,5 @@
-import subprocess, signal, time, os, re
+import multiprocessing, subprocess, signal, time, os, re
+import pygetwindow as gw
 from flask import Flask, render_template, request, redirect, session
 
 from lib.window import Window
@@ -7,17 +8,37 @@ from lib.keyboard import Keyboard
 app = Flask(__name__)
 delayScreen = 0.3
 archivo = "./Database-MSDOS/Database/SALIDA.TXT"
+nombre = "DOSBox 0.74, Cpu speed:  9000000 cycles, Frameskip  0, Program:  GWBASIC"
 leido = False
 database = {
     "numReg": 0,
     "datos": []
 }
 
+def read_line(line, file="ventana.txt"):
+    line = line - 1
+    # Abre el archivo en modo lectura
+    with open(file, "r") as archivo:
+        lineas = archivo.readlines()  # Lee todas las líneas del archivo
+
+        if 0 <= line < len(lineas):
+            linea_deseada = lineas[line]
+            return linea_deseada.strip()  # strip() elimina los caracteres de nueva línea
+        else:
+            return 0
+
+def chequearVentana():
+    ventanas_abiertas = gw.getWindowsWithTitle(nombre)
+    if ventanas_abiertas:
+        return True
+    else:
+        return False
+
 def iniciar():
     global ventana, teclado, basededatos, db
     basededatos=subprocess.Popen("cd Database-MSDOS && .\\database.bat", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    time.sleep(4)
-    ventana = Window("DOSBox 0.74, Cpu speed:     3000 cycles, Frameskip  0, Program:  GWBASIC")
+    while chequearVentana()==False: 0
+    ventana = Window(nombre)
     teclado = Keyboard()
     db = True
 
@@ -50,11 +71,11 @@ def lectura():
     teclado.Escribir_frase('LIST')
     time.sleep(delayScreen)
     teclado.Enter()
-    time.sleep(3)
+    time.sleep(delayScreen)
     teclado.Escribir_frase('RUN')
     time.sleep(delayScreen)
     teclado.Enter()
-    time.sleep(2)
+    time.sleep(delayScreen)
 
     global leido
     leido = True
@@ -64,19 +85,18 @@ def procesar(file=archivo):
     with open(file, "r") as archivo:
         lineas = archivo.readlines()  # Lee todas las líneas del archivo
         i = 15
+        id = 1
         while (lineas[i].strip()!="1 - INTRODUCIR DATOS"):
-            # print(i,": '",lineas[i].strip(),"',")
-            print("Nombre: ",lineas[i].strip(),", Tipo: ",lineas[i+1].strip(),", Cinta: ",lineas[i+2].strip())
-            database["datos"].append({"Numero": i-14,"Nombre": lineas[i].strip(),"Tipo": lineas[i+1].strip(),"Cinta": lineas[i+2].strip()})
+            database["datos"].append({"Numero": id,"Nombre": lineas[i].strip(),"Tipo": lineas[i+1].strip(),"Cinta": lineas[i+2].strip()})
             database["numReg"] = lineas[i+3].strip()
             i = i + 5
-        # print("NumReg: ",database["numReg"])
+            id = id + 1
 
 def inicio():
     iniciar()
     lectura()
     terminar()
-    procesar()
+    procesar()   
 
 @app.route('/', methods=['GET'])
 def index():
