@@ -1,1 +1,1 @@
-DOSBox-0.74\DOSBox.exe Database\gwbasic.bat -noconsole > salida.txt
+DOSBox-0.74\DOSBox.exe Database\gwbasic.bat -noconsole

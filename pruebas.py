@@ -97,7 +97,16 @@ from pytesseract import Output
 # cv2.imshow('img', img)
 # cv2.waitKey(0)
 
-imagen = Image.open('mugsy.png')
-string = pt.image_to_string(imagen, lang="spa+eng", config='--psm 6')
-# string = pt.image_to_string(imagen, lang="spa")
-print(string)
+# imagen = Image.open('mugsy.png')
+# string = pt.image_to_string(imagen, lang="spa+eng", config='--psm 6')
+# # string = pt.image_to_string(imagen, lang="spa")
+# print(string)
+
+import pygetwindow as gw
+
+# Obtener todas las ventanas abiertas
+ventanas_abiertas = gw.getAllTitles()
+
+# Imprimir los títulos de las ventanas
+for titulo in ventanas_abiertas:
+    print(titulo)

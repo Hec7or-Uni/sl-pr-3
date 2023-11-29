@@ -8,12 +8,43 @@ from lib.keyboard import Keyboard
 app = Flask(__name__)
 delayScreen = 0.3
 archivo = "./Database-MSDOS/Database/SALIDA.TXT"
-nombre = "DOSBox 0.74, Cpu speed:  9000000 cycles, Frameskip  0, Program:  GWBASIC"
+nombre = "DOSBox 0.74, Cpu speed: max 100% cycles, Frameskip  0, Program:  GWBASIC"
 leido = False
 database = {
     "numReg": 0,
     "datos": []
 }
+
+def escribir_en_linea(ventana, numero_linea, nuevo_contenido):
+    teclado = Keyboard()
+    if ventana:
+        # Ir a la línea especificada
+        for _ in range(numero_linea - 1):
+            teclado.Down()
+
+        # Seleccionar la línea actual
+        teclado.Seleccionar_linea()
+
+        # Borrar el contenido actual
+        teclado.Borrar()
+
+        # Escribir el nuevo contenido
+        teclado.Escribir_frase_normal(nuevo_contenido)
+        time.sleep(1)
+
+        # Guardar
+        teclado.Guardar() 
+        time.sleep(1)
+    del teclado
+
+def modificarCiclosYRedireccion():
+    configuracion=subprocess.Popen("cd Database-MSDOS\DOSBox-0.74 && .\\\"DOSBox 0.74 Options.bat\"", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    while chequearVentana("dosbox-0.74.conf: Bloc de notas")==False: 0
+    config = Window("dosbox-0.74.conf: Bloc de notas")
+    escribir_en_linea(config,85,"cycles=max")
+    config.Cerrar_ventana()
+    del config
+
 
 def read_line(line, file="ventana.txt"):
     line = line - 1
@@ -27,8 +58,8 @@ def read_line(line, file="ventana.txt"):
         else:
             return 0
 
-def chequearVentana():
-    ventanas_abiertas = gw.getWindowsWithTitle(nombre)
+def chequearVentana(ventana):
+    ventanas_abiertas = gw.getWindowsWithTitle(ventana)
     if ventanas_abiertas:
         return True
     else:
@@ -36,8 +67,9 @@ def chequearVentana():
 
 def iniciar():
     global ventana, teclado, basededatos, db
-    basededatos=subprocess.Popen("cd Database-MSDOS && .\\database.bat", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    while chequearVentana()==False: 0
+    modificarCiclosYRedireccion()
+    basededatos=subprocess.Popen("cd Database-MSDOS && .\\database.bat > salida.txt", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    while chequearVentana(nombre)==False: 0
     ventana = Window(nombre)
     teclado = Keyboard()
     db = True
