@@ -38,13 +38,12 @@ def escribir_en_linea(ventana, numero_linea, nuevo_contenido):
     del teclado
 
 def modificarCiclosYRedireccion():
-    configuracion=subprocess.Popen("cd Database-MSDOS\DOSBox-0.74 && .\\\"DOSBox 0.74 Options.bat\"", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    configuracion=subprocess.Popen("cd .\\Database-MSDOS\\DOSBox-0.74 && .\\\"DOSBox 0.74 Options.bat\"", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     while chequearVentana("dosbox-0.74.conf: Bloc de notas")==False: 0
     config = Window("dosbox-0.74.conf: Bloc de notas")
     escribir_en_linea(config,85,"cycles=max")
     config.Cerrar_ventana()
     del config
-
 
 def read_line(line, file="ventana.txt"):
     line = line - 1
@@ -68,7 +67,7 @@ def chequearVentana(ventana):
 def iniciar():
     global ventana, teclado, basededatos, db
     modificarCiclosYRedireccion()
-    basededatos=subprocess.Popen("cd Database-MSDOS && .\\database.bat > salida.txt", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    basededatos=subprocess.Popen("cd .\\Database-MSDOS && .\\database.bat > salida.txt", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     while chequearVentana(nombre)==False: 0
     ventana = Window(nombre)
     teclado = Keyboard()
@@ -128,7 +127,7 @@ def inicio():
     iniciar()
     lectura()
     terminar()
-    procesar()   
+    procesar()
 
 @app.route('/', methods=['GET'])
 def index():
@@ -170,7 +169,11 @@ def cinta_post():
         "datos": []
     }
     cinta = request.form['cinta'].upper()
-    instancias_conversacionales = [instancia for instancia in database["datos"] if cinta in instancia["Cinta"]]
+    if cinta.isdigit():
+        instancias_conversacionales = [instancia for instancia in database["datos"] if cinta == instancia["Cinta"]]
+    else:
+        instancias_conversacionales = [instancia for instancia in database["datos"] if cinta in instancia["Cinta"]]
+        
     if len(instancias_conversacionales)>0:
         data["encontrado"] = "SI"
         for instancia in instancias_conversacionales:
