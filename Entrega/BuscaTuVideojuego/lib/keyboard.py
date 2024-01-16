@@ -54,3 +54,19 @@ class Keyboard:
         self.__keyboard.press("g")
         self.__keyboard.release("g")
         self.__keyboard.release(Key.ctrl)
+
+    def Seleccionar_todo(self):
+        self.__keyboard.press(Key.ctrl)
+        self.__keyboard.press("a")
+        self.__keyboard.release("a")
+        self.__keyboard.release(Key.ctrl)
+        self.__keyboard.press(Key.esc)
+        self.__keyboard.release(Key.esc)
+        self.__keyboard.press(Key.ctrl)
+        self.__keyboard.press("e")
+        self.__keyboard.release("e")
+        self.__keyboard.release(Key.ctrl)
+        self.__keyboard.press(Key.esc)
+        self.__keyboard.release(Key.esc)
+    
+    

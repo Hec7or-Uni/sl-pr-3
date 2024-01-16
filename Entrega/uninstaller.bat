@@ -9,5 +9,8 @@ echo Eliminando entorno virtual...
 rmdir /s /q "%VENV_PATH%"
 echo Eliminado
 
+cd BuscaTuVideojuego\Database-MSDOS\DOSBox-0.74
+DOSBox.exe -resetconf
+
 pause
 endlocal

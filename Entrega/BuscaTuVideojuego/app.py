@@ -1,4 +1,4 @@
-import multiprocessing, subprocess, signal, time, os, re
+import multiprocessing, subprocess, signal, time, os, sys
 import pygetwindow as gw
 from flask import Flask, render_template, request, redirect, session
 
@@ -15,33 +15,34 @@ database = {
     "datos": []
 }
 
-def escribir_en_linea(ventana, numero_linea, nuevo_contenido):
+def cambiar_ciclos():
     teclado = Keyboard()
-    if ventana:
-        # Ir a la línea especificada
-        for _ in range(numero_linea - 1):
-            teclado.Down()
-
-        # Seleccionar la línea actual
-        teclado.Seleccionar_linea()
-
-        # Borrar el contenido actual
-        teclado.Borrar()
-
-        # Escribir el nuevo contenido
-        teclado.Escribir_frase_normal(nuevo_contenido)
-        time.sleep(1)
-
-        # Guardar
-        teclado.Guardar() 
-        time.sleep(1)
+    teclado.Seleccionar_todo()
+    teclado.Borrar()
+    teclado.Escribir_frase_normal("[sdl]\n\nfullscreen=false\nfulldouble=false\nfullresolution=original\nwindowresolution=original\noutput=surface\nautolock=true\nsensitivity=100\nwaitonerror=true\npriority=higher,normal\nmapperfile=mapper-0.74.map\nusescancodes=true\n\n")
+    teclado.Escribir_frase_normal("[dosbox]\n\nlanguage=\nmachine=svga_s3\ncaptures=capture\nmemsize=16\n\n")
+    teclado.Escribir_frase_normal("[render]\n\nframeskip=0\naspect=false\nscaler=normal2x\n\n")
+    teclado.Escribir_frase_normal("[cpu]\n\ncore=auto\ncputype=auto\ncycles=max\ncycleup=10\ncycledown=20\n\n")
+    teclado.Escribir_frase_normal("[mixer]\n\nnosound=false\nrate=44100\nblocksize=1024\nprebuffer=20\n\n")
+    teclado.Escribir_frase_normal("[midi]\n\nmpu401=intelligent\nmididevice=default\nmidiconfig=\n\n")
+    teclado.Escribir_frase_normal("[sblaster]\n\nsbtype=sb16\nsbbase=220\nirq=7\ndma=1\nhdma=5\nsbmixer=true\noplmode=auto\noplemu=default\noplrate=44100\n\n")
+    teclado.Escribir_frase_normal("[gus]\n\ngus=false\ngusrate=44100\ngusbase=240\ngusirq=5\ngusdma=3\nultradir=C:\\ULTRASND\n\n")
+    teclado.Escribir_frase_normal("[speaker]\n\npcspeaker=true\npcrate=44100\ntandy=auto\ntandyrate=44100\ndisney=true\n\n")
+    teclado.Escribir_frase_normal("[joystick]\n\njoysticktype=auto\ntimed=true\nautofire=false\nswap34=false\nbuttonwrap=false\n\n")
+    teclado.Escribir_frase_normal("[serial]\n\nserial1=dummy\nserial2=dummy\nserial3=disabled\nserial4=disabled\n\n")
+    teclado.Escribir_frase_normal("[dos]\n\nxms=true\nems=true\numb=true\nkeyboardlayout=auto\n\n")
+    teclado.Escribir_frase_normal("[ipx]\n\nipx=false\n\n")
+    teclado.Escribir_frase_normal("[autoexec]\n\n")
+    teclado.Guardar() 
+    time.sleep(1)
     del teclado
 
 def modificarCiclosYRedireccion():
     configuracion=subprocess.Popen("cd .\\Database-MSDOS\\DOSBox-0.74 && .\\\"DOSBox 0.74 Options.bat\"", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     while chequearVentana("dosbox-0.74.conf: Bloc de notas")==False: 0
     config = Window("dosbox-0.74.conf: Bloc de notas")
-    escribir_en_linea(config,85,"cycles=max")
+    num_linea = cambiar_ciclos()
+    configuracion.wait()
     config.Cerrar_ventana()
     del config
 
@@ -66,9 +67,17 @@ def chequearVentana(ventana):
 
 def iniciar():
     global ventana, teclado, basededatos, db
-    modificarCiclosYRedireccion()
+    # modificarCiclosYRedireccion()
     basededatos=subprocess.Popen("cd .\\Database-MSDOS && .\\database.bat > salida.txt", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    while chequearVentana(nombre)==False: 0
+    intentos=0
+    while chequearVentana(nombre)==False:
+        if intentos>5:
+            print("Aqui")
+            terminar_aplicacion()
+            sys.exit(0)
+        time.sleep(2)
+        intentos = intentos + 1
+    print("Aqui 1")
     ventana = Window(nombre)
     teclado = Keyboard()
     db = True
@@ -128,6 +137,7 @@ def inicio():
     lectura()
     terminar()
     procesar()
+    
 
 @app.route('/', methods=['GET'])
 def index():
@@ -180,7 +190,7 @@ def cinta_post():
             data["datos"].append({"numero": instancia["Numero"], "nombre": instancia["Nombre"], "tipo": instancia["Tipo"], "cinta": instancia["Cinta"]})
     return render_template("app.html", data=data)
 
-def terminar_app(signum, frame):
+def terminar_aplicacion():
     if leido==True:
         archivo_a_eliminar = archivo
         if os.path.exists(archivo_a_eliminar):
@@ -188,7 +198,10 @@ def terminar_app(signum, frame):
         archivo_a_eliminar = "./Database-MSDOS/salida.txt"
         if os.path.exists(archivo_a_eliminar):
             os.remove(archivo_a_eliminar)
-    exit(0)
+
+def terminar_app(signum, frame):
+    terminar_aplicacion()
+    sys.exit(0)
 
 if __name__ == '__main__':
     inicio()
